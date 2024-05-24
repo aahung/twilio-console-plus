@@ -1,9 +1,0 @@
-{
-  "summary": "Add some secret saurce to Twilio console",
-  "categories": {
-    "firefox": [
-      "other"
-    ]
-  },
-  "requires_payment": false
-}
