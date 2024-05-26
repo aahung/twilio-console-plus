@@ -3,11 +3,11 @@
 ## Build
 
 ```sh
-yarn build  # Generate the dist/bundle.js
+npm run build  # Generate the dist/bundle.js
 ```
 
 ### Package a zip
 
 ```sh
-yarn package
+npm run package
 ```

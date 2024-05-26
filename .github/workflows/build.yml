@@ -24,9 +24,8 @@ jobs:
 
     - name: Build
       run: |
-        npm install -g yarn
-        yarn
+        npm install
 
     - name: Lint
       run: |
-        yarn lint
+        npm run lint
