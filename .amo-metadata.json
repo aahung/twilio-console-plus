@@ -1,0 +1,17 @@
+{
+  "version": {
+    "license": "MIT"
+  },
+  "categories": {
+    "firefox": [
+      "other"
+    ]
+  },
+  "requires_payment": false,
+  "homepage": {
+    "en-US": "https://github.com/aahung/twilio-console-plus"
+  },
+  "support_email": {
+    "en-US": "greats-tag0f@icloud.com"
+  }
+}
