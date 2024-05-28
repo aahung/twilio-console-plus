@@ -1,4 +1,4 @@
-import { twilioGet } from "./twilio-request";
+import { twilioGet, twilioGetPaged } from "./twilio-request";
 
 interface Link {
   label: string;
@@ -94,6 +94,10 @@ export class TwilioRegulatorySupportingDocument extends TwilioResource {
 
 export class TwilioIncomingNumber extends TwilioResource {
   getName = () => `Incoming number: ${this.sid}`;
+  getFullName = async () => {
+    const object = await this.getObject();
+    return `${this.getName()} (${object.friendly_name}; ${object.phone_number})`;
+  };
   getRelatedResources = () => Promise.resolve([]);
   getApiUrl = () =>
     `https://api.twilio.com/2010-04-01/Accounts/${this._getAccountSid()}/IncomingPhoneNumbers/${this.sid}.json`;
@@ -101,6 +105,49 @@ export class TwilioIncomingNumber extends TwilioResource {
 
 export class TwilioMessagingService extends TwilioResource {
   getName = () => `Messaging service: ${this.sid}`;
-  getRelatedResources = () => Promise.resolve([]);
+  getRelatedResources = async () => {
+    const response = await twilioGet(
+      `https://messaging.twilio.com/v1/Services/${this.sid}/Compliance/Usa2p`,
+    );
+    const results = response.compliance.map(
+      (campaign: Record<string, string>) =>
+        new TwllioA2pCampaign(campaign.sid, this.sid),
+    );
+    for await (const response of twilioGetPaged(
+      `https://messaging.twilio.com/v1/Services/${this.sid}/PhoneNumbers`,
+    )) {
+      const phones = (
+        response as Record<string, Record<string, string>[]>
+      ).phone_numbers.map(
+        (phone: Record<string, string>) => new TwilioIncomingNumber(phone.sid),
+      );
+      results.push(...phones);
+    }
+
+    return results;
+  };
   getApiUrl = () => `https://messaging.twilio.com/v1/Services/${this.sid}`;
+}
+
+export class TwllioA2pCampaign extends TwilioResource {
+  messagingServiceSid: string;
+  constructor(sid: string, messagingServiceSid: string) {
+    super(sid);
+    this.sid = sid;
+    this.messagingServiceSid = messagingServiceSid;
+  }
+  getName = () => `A2p campaign: ${this.sid}`;
+  getRelatedResources = async () => {
+    const object = await this.getObject();
+    return [new TwilioA2pBrand(object.brand_registration_sid as string)];
+  };
+  getApiUrl = () =>
+    `https://messaging.twilio.com/v1/Services/${this.messagingServiceSid}/Compliance/Usa2p/${this.sid}`;
+}
+
+export class TwilioA2pBrand extends TwilioResource {
+  getName = () => `A2p brand: ${this.sid}`;
+  getRelatedResources = () => Promise.resolve([]);
+  getApiUrl = () =>
+    `https://messaging.twilio.com/v1/a2p/BrandRegistrations/${this.sid}`;
 }

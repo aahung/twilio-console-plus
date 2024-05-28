@@ -1,9 +1,12 @@
+import "react-tooltip/dist/react-tooltip.css";
+
 import React, { useState } from "react";
 import Popup from "reactjs-popup";
 import { CopyBlock, dracula } from "react-code-blocks";
 import { useQuery } from "@tanstack/react-query";
 import { TwilioResource } from "../twilio-resources";
 import styled from "styled-components";
+import { Tooltip } from "react-tooltip";
 
 const PopupContainer = styled.div`
   .close {
@@ -31,7 +34,12 @@ const InspectResourceButton: React.FC<InspectResourceButtonProps> = ({
   const openModal = () => setOpen(true);
   return (
     <>
-      <button onClick={openModal}>Inspect</button>
+      <button className={`inspect-${resource.sid}`} onClick={openModal}>
+        Inspect
+      </button>
+      <Tooltip anchorSelect={`.inspect-${resource.sid}`} place="top">
+        Click to inspect {resource.getName()}
+      </Tooltip>
       <Popup
         open={open}
         modal

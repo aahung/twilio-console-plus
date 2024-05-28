@@ -1,4 +1,5 @@
 import {
+  TwilioA2pBrand,
   TwilioAddress,
   TwilioIncomingNumber,
   TwilioMessagingService,
@@ -28,6 +29,14 @@ export const LOADERS: Loader[] = [
   {
     resourceUrl: /.+\/sms\/(\w+)\/messaging-service-properties(\?.*)$/,
     resourceCreator: (match: string[]) => new TwilioMessagingService(match[1]),
+  },
+  {
+    resourceUrl: /.+\/sms\/services\/(\w+)\/[^/]+(\?.*)$/,
+    resourceCreator: (match: string[]) => new TwilioMessagingService(match[1]),
+  },
+  {
+    resourceUrl: /.+\/sms\/regulatory-compliance\/brands\/(\w+)$/,
+    resourceCreator: (match: string[]) => new TwilioA2pBrand(match[1]),
   },
 ];
 
