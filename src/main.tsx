@@ -3,23 +3,24 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClientProvider } from "@tanstack/react-query";
 import debounce from "debounce";
-import InspectResourceButton from "./components/InspectResourceButton";
+import InspectResourceButton from "./components/inspect-resource-button";
 import { createTwilioResourceFromUrl } from "./twilio-resource-loaders";
-import AccountInfoBanner from "./components/AccountInfoBanner";
+import AccountInfoBanner from "./components/account-info-banner";
 import { QUERY_CLIENT } from "./query-client";
+import GlobalSearchBar from "./components/global-search-bar";
 
 const resetContainer = () => {
   const oldContainer = document.querySelector("#pt-container");
   if (oldContainer) {
-    document.removeChild(oldContainer);
+    oldContainer.remove();
   }
   const container = document.createElement("div");
   container.id = "pt-container";
-  document.body.appendChild(container);
+  document.body.append(container);
   return container;
 };
 
-const setupAccountBanner = () => {
+const setupAccountBannerAndGlobalSearchBar = () => {
   fetch("https://www.twilio.com/console/api/v2/projects/info", {
     credentials: "include",
   }).then(async (response) => {
@@ -31,7 +32,12 @@ const setupAccountBanner = () => {
     const container = resetContainer();
     const root = createRoot(container);
     root.render(
-      <AccountInfoBanner accountSid={accountSid} authToken={authToken} />,
+      <QueryClientProvider client={QUERY_CLIENT}>
+        <div>
+          <GlobalSearchBar />
+          <AccountInfoBanner />
+        </div>
+      </QueryClientProvider>,
     );
   });
 };
@@ -44,7 +50,7 @@ const domMutateCallback: MutationCallback = (mutationList) => {
 
 const setupResourceDetailInfoButtons = debounce(() => {
   const links = document.querySelectorAll("a");
-  links.forEach((link) => {
+  for (const link of links) {
     const twilioResource = createTwilioResourceFromUrl(link.href);
     if (twilioResource) {
       const parent = link.parentElement;
@@ -52,7 +58,7 @@ const setupResourceDetailInfoButtons = debounce(() => {
       if (!ptContainer) {
         const div = document.createElement("div");
         div.classList.add("pt-root");
-        parent.appendChild(div);
+        parent.append(div);
         createRoot(div).render(
           <QueryClientProvider client={QUERY_CLIENT}>
             <InspectResourceButton resource={twilioResource} />
@@ -60,11 +66,11 @@ const setupResourceDetailInfoButtons = debounce(() => {
         );
       }
     }
-  });
+  }
 }, 300);
 
 window.addEventListener("load", () => {
-  setupAccountBanner();
+  setupAccountBannerAndGlobalSearchBar();
   const observer = new MutationObserver(domMutateCallback);
   observer.observe(document.body, { childList: true, subtree: true });
 });

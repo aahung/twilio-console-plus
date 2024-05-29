@@ -4,7 +4,8 @@
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
+    "plugin:unicorn/recommended"
   ],
   "env": {
     "browser": true
@@ -18,5 +19,8 @@
     "react": {
       "version": "detect"
     }
-  }
+  },
+  "plugins": [
+    "unicorn"
+  ]
 }

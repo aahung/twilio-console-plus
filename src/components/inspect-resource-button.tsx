@@ -1,32 +1,15 @@
-import "react-tooltip/dist/react-tooltip.css";
-
 import React, { useState } from "react";
-import Popup from "reactjs-popup";
 import { CopyBlock, dracula } from "react-code-blocks";
 import { useQuery } from "@tanstack/react-query";
 import { TwilioResource } from "../twilio-resources";
-import styled from "styled-components";
 import { Tooltip } from "react-tooltip";
+import Modal from "./modal";
 
-const PopupContainer = styled.div`
-  .close {
-    text-align: center;
-    cursor: pointer;
-    background-color: red;
-    color: white;
-    padding: 0.5rem;
-  }
-  .content {
-    max-height: 90vh;
-    overflow-y: scroll;
-  }
-`;
-
-interface InspectResourceButtonProps {
+interface InspectResourceButtonProperties {
   resource: TwilioResource;
 }
 
-const InspectResourceButton: React.FC<InspectResourceButtonProps> = ({
+const InspectResourceButton: React.FC<InspectResourceButtonProperties> = ({
   resource,
 }) => {
   const [open, setOpen] = useState(false);
@@ -40,30 +23,18 @@ const InspectResourceButton: React.FC<InspectResourceButtonProps> = ({
       <Tooltip anchorSelect={`.inspect-${resource.sid}`} place="top">
         Click to inspect {resource.getName()}
       </Tooltip>
-      <Popup
-        open={open}
-        modal
-        closeOnDocumentClick={false}
-        onClose={closeModal}
-      >
-        <PopupContainer>
-          <div className="close" onClick={closeModal}>
-            Close
-          </div>
-          <div className="content">
-            <ResourceDetailView resource={resource} />
-          </div>
-        </PopupContainer>
-      </Popup>
+      <Modal open={open} onClose={closeModal}>
+        <ResourceDetailView resource={resource} />
+      </Modal>
     </>
   );
 };
 
-interface ResourceDetailViewProps {
+interface ResourceDetailViewProperties {
   resource: TwilioResource;
 }
 
-const ResourceDetailView: React.FC<ResourceDetailViewProps> = ({
+export const ResourceDetailView: React.FC<ResourceDetailViewProperties> = ({
   resource,
 }) => {
   const apiUrl = resource.getApiUrl();
@@ -102,7 +73,7 @@ const ResourceDetailView: React.FC<ResourceDetailViewProps> = ({
         />
         <h4>Response:</h4>
         <CopyBlock
-          text={JSON.stringify(data, null, 2)}
+          text={JSON.stringify(data, undefined, 2)}
           language="json"
           theme={dracula}
           showLineNumbers
@@ -120,8 +91,8 @@ const ResourceDetailView: React.FC<ResourceDetailViewProps> = ({
         {relatedResources?.length === 0 && <p>No related resources found.</p>}
         <ul>
           {relatedResources &&
-            relatedResources.map((relatedResource, i) => (
-              <li key={i}>
+            relatedResources.map((relatedResource, index) => (
+              <li key={index}>
                 <ResourceNameLabel resource={relatedResource} />{" "}
                 <InspectResourceButton resource={relatedResource} />
               </li>
@@ -136,11 +107,13 @@ const ResourceDetailView: React.FC<ResourceDetailViewProps> = ({
   return <p>Unexpected state</p>;
 };
 
-interface ResourceNameLabelProps {
+interface ResourceNameLabelProperties {
   resource: TwilioResource;
 }
 
-const ResourceNameLabel: React.FC<ResourceNameLabelProps> = ({ resource }) => {
+const ResourceNameLabel: React.FC<ResourceNameLabelProperties> = ({
+  resource,
+}) => {
   const { data: fullName } = useQuery({
     queryKey: ["getFullName", resource.sid],
     queryFn: () => resource.getFullName(),

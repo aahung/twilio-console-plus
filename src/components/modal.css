@@ -1,0 +1,26 @@
+.pt-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #00000080;
+  /* twilio has elements (dropdown) with z-index 100 */
+  z-index: 101;
+}
+
+.pt-modal-content {
+  position: absolute;
+  border: 1px solid #ccc;
+  background: #fff;
+  overflow-y: auto;
+  border-radius: 4px;
+  outline: none;
+  padding: 20px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  max-width: 1000px;
+  max-height: 90vh;
+}

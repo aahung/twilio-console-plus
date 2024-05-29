@@ -6,11 +6,11 @@ interface Link {
 }
 
 export abstract class TwilioResource {
-  sid: string;
+  readonly sid: string;
   _objectCache: Record<string, unknown>;
   constructor(sid: string) {
     this.sid = sid;
-    this._objectCache = null;
+    this._objectCache = undefined;
   }
   abstract getName(): string;
   abstract getRelatedResources(): Promise<TwilioResource[]>;
@@ -43,13 +43,13 @@ export class TwilioRegulatoryBundle extends TwilioResource {
       `https://numbers.twilio.com/v2/RegulatoryCompliance/Bundles/${this.sid}/ItemAssignments?PageSize=100`,
     );
     const results: TwilioResource[] = [];
-    response.results.forEach((item: Record<string, string>) => {
+    for (const item of response.results) {
       if (item.object_sid.startsWith("IT")) {
         results.push(new TwilioRegulatoryEndUser(item.object_sid));
       } else if (item.object_sid.startsWith("RD")) {
         results.push(new TwilioRegulatorySupportingDocument(item.object_sid));
       }
-    });
+    }
     return results;
   };
   getApiUrl = () =>
@@ -133,7 +133,6 @@ export class TwllioA2pCampaign extends TwilioResource {
   messagingServiceSid: string;
   constructor(sid: string, messagingServiceSid: string) {
     super(sid);
-    this.sid = sid;
     this.messagingServiceSid = messagingServiceSid;
   }
   getName = () => `A2p campaign: ${this.sid}`;
