@@ -25,6 +25,8 @@ commands for quick API testing and integration.
 
 <img alt="screenshot" src="./screenshots/2.png" style="max-width: 100%" />
 
+<img alt="screenshot" src="./screenshots/3.png" style="max-width: 100%" />
+
 ## Additional configuration on Firefox
 
 Firefox by default doesn't grant `host_permission` for manifest V3 extensions

@@ -56,10 +56,10 @@ const setupResourceDetailInfoButtons = debounce(() => {
       const parent = link.parentElement;
       const ptContainer = parent.querySelector(".pt-root");
       if (!ptContainer) {
-        const div = document.createElement("div");
-        div.classList.add("pt-root");
-        parent.append(div);
-        createRoot(div).render(
+        const span = document.createElement("span");
+        span.classList.add("pt-root");
+        link.before(span);
+        createRoot(span).render(
           <QueryClientProvider client={QUERY_CLIENT}>
             <InspectResourceButton resource={twilioResource} />
           </QueryClientProvider>,

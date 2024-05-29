@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { TwilioResource } from "../twilio-resources";
 import { Tooltip } from "react-tooltip";
 import Modal from "./modal";
+import { GiMagicPortal } from "react-icons/gi";
 
 interface InspectResourceButtonProperties {
   resource: TwilioResource;
@@ -18,7 +19,7 @@ const InspectResourceButton: React.FC<InspectResourceButtonProperties> = ({
   return (
     <>
       <button className={`inspect-${resource.sid}`} onClick={openModal}>
-        Inspect
+        <GiMagicPortal />
       </button>
       <Tooltip anchorSelect={`.inspect-${resource.sid}`} place="top">
         Click to inspect {resource.getName()}
