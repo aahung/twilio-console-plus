@@ -12,12 +12,11 @@ Add some secret saurce to Twilio console
   </a>
 </p>
 
-Designed to enhance your Twilio console experience,
-Twilio Console Plus allows you to seamlessly switch between your Twilio
-subaccounts with ease, saving time and improving workflow efficiency.
-Additionally, Twilio Console Plus allows you to view detailed information
-of selected Twilio resources in JSON format, complete with sample cURL
-commands for quick API testing and integration.
+Designed to elevate your Twilio console experience, Twilio Console Plus offers the following features:
+
+- For each supported resource, an inspect button is added to its hyperlink, enabling you to view the resource object in JSON format and the sample cURL command for swift API testing and integration. Related resources will also be accessible for inspection.
+- The current subaccount information is displayed at the top, accompanied by a quick switch button to transition to another subaccount easily.
+- An account-level "Go To" search box can be activated by pressing "Q" or the floating button at the bottom right corner. It can discern the type of resource from the SID.
 
 ## Screenshots
 
