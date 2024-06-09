@@ -22,5 +22,8 @@
   },
   "plugins": [
     "unicorn"
+  ],
+  "ignorePatterns": [
+    "src/generated-twilio-api-models/"
   ]
 }

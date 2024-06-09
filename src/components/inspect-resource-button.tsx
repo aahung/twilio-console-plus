@@ -7,7 +7,7 @@ import Modal from "./modal";
 import { GiMagicPortal } from "react-icons/gi";
 
 interface InspectResourceButtonProperties {
-  resource: TwilioResource;
+  resource: TwilioResource<unknown>;
 }
 
 const InspectResourceButton: React.FC<InspectResourceButtonProperties> = ({
@@ -32,7 +32,7 @@ const InspectResourceButton: React.FC<InspectResourceButtonProperties> = ({
 };
 
 interface ResourceDetailViewProperties {
-  resource: TwilioResource;
+  resource: TwilioResource<unknown>;
 }
 
 export const ResourceDetailView: React.FC<ResourceDetailViewProperties> = ({
@@ -109,7 +109,7 @@ export const ResourceDetailView: React.FC<ResourceDetailViewProperties> = ({
 };
 
 interface ResourceNameLabelProperties {
-  resource: TwilioResource;
+  resource: TwilioResource<unknown>;
 }
 
 const ResourceNameLabel: React.FC<ResourceNameLabelProperties> = ({

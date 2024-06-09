@@ -1,4 +1,4 @@
-export const twilioGet = (apiUrl: string) => {
+export const twilioGet = <T>(apiUrl: string): Promise<T> => {
   const { accountSid, authToken } = window.ptTwilioCreds;
   return fetch(apiUrl, {
     headers: {
@@ -7,10 +7,11 @@ export const twilioGet = (apiUrl: string) => {
   }).then((response) => response.json());
 };
 
-export async function* twilioGetPaged(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function* twilioGetPaged<T extends Record<string, any>>(
   apiUrl: string,
-): AsyncGenerator<unknown, void, unknown> {
-  const response = await twilioGet(apiUrl);
+): AsyncGenerator<T, void, unknown> {
+  const response = await twilioGet<T>(apiUrl);
   yield response;
   const next_url = response.meta?.next_page_url;
   const next_uri = response.next_page_uri;

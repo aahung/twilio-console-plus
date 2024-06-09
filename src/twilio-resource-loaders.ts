@@ -9,7 +9,7 @@ import {
   TwilioResource,
 } from "./twilio-resources";
 
-type UrlMatchResearchCreator = (match: string[]) => TwilioResource;
+type UrlMatchResearchCreator = (match: string[]) => TwilioResource<unknown>;
 export interface UrlLoader {
   resourceUrl: RegExp;
   resourceCreator: UrlMatchResearchCreator;
@@ -44,7 +44,7 @@ export const URL_LOADERS: UrlLoader[] = [
 
 export const createTwilioResourceFromUrl = (
   resourceUrl: string,
-): TwilioResource | null => {
+): TwilioResource<unknown> | null => {
   for (const loader of URL_LOADERS) {
     const match = loader.resourceUrl.exec(resourceUrl);
     if (match) {
@@ -54,7 +54,7 @@ export const createTwilioResourceFromUrl = (
   return undefined;
 };
 
-type SidResourceCreator = (sid: string) => Promise<TwilioResource>;
+type SidResourceCreator = (sid: string) => Promise<TwilioResource<unknown>>;
 
 export interface SidLoader {
   resourceSid: RegExp;
@@ -95,13 +95,13 @@ export const SID_LOADERS: SidLoader[] = [
 
 export const createTwilioResourceFromSid = async (
   sid: string,
-): Promise<TwilioResource | undefined> => {
+): Promise<TwilioResource<unknown> | undefined> => {
   for (const loader of SID_LOADERS) {
     const match = loader.resourceSid.exec(sid);
     if (match) {
       const candidate = await loader.resourceCreator(sid);
       const object = await candidate.getObject();
-      if (object.sid === sid) {
+      if ((object as Record<string, unknown>).sid === sid) {
         return candidate;
       }
     }

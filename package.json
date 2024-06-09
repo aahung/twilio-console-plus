@@ -31,7 +31,8 @@
     "lint": "web-ext lint && eslint 'src/**/*.{ts,tsx}'",
     "fix": "prettier --write src && eslint --fix 'src/**/*.{ts,tsx}'",
     "package": "web-ext build",
-    "submit:firefox": "web-ext sign --use-submission-api --channel=listed --amo-metadata=.amo-metadata.json --api-key=$AMO_JWT_ISSUER --api-secret=$AMO_JWT_SECRET"
+    "submit:firefox": "web-ext sign --use-submission-api --channel=listed --amo-metadata=.amo-metadata.json --api-key=$AMO_JWT_ISSUER --api-secret=$AMO_JWT_SECRET",
+    "generate-twilio-api-models": "./generate_twilio_api_models.sh"
   },
   "dependencies": {
     "-": "^0.0.1",
