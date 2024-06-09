@@ -8,6 +8,7 @@ import { createTwilioResourceFromUrl } from "./twilio-resource-loaders";
 import AccountInfoBanner from "./components/account-info-banner";
 import { QUERY_CLIENT } from "./query-client";
 import GlobalSearchBar from "./components/global-search-bar";
+import CredentialWaiter from "./components/credential-waiter";
 
 const resetContainer = () => {
   const oldContainer = document.querySelector("#pt-container");
@@ -33,10 +34,12 @@ const setupAccountBannerAndGlobalSearchBar = () => {
     const root = createRoot(container);
     root.render(
       <QueryClientProvider client={QUERY_CLIENT}>
-        <div>
-          <GlobalSearchBar />
-          <AccountInfoBanner />
-        </div>
+        <CredentialWaiter>
+          <div>
+            <GlobalSearchBar />
+            <AccountInfoBanner />
+          </div>
+        </CredentialWaiter>
       </QueryClientProvider>,
     );
   });
@@ -61,7 +64,9 @@ const setupResourceDetailInfoButtons = debounce(() => {
         link.before(span);
         createRoot(span).render(
           <QueryClientProvider client={QUERY_CLIENT}>
-            <InspectResourceButton resource={twilioResource} />
+            <CredentialWaiter>
+              <InspectResourceButton resource={twilioResource} />
+            </CredentialWaiter>
           </QueryClientProvider>,
         );
       }
