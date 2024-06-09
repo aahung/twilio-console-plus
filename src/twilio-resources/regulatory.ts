@@ -1,4 +1,4 @@
-import { twilioGet } from "../twilio-request";
+import { twilioGet, twilioGetPaged } from "../twilio-request";
 
 import {
   components as twilio_numbers_v2_components,
@@ -12,13 +12,14 @@ export class TwilioRegulatoryBundle extends TwilioResource<
 > {
   getName = () => `Regulatory bundle: ${this.sid}`;
   getRelatedResources = async () => {
+    const results: TwilioResource<unknown>[] = [];
+
     // TODO: handle pagination
     const response = await twilioGet<
       twilio_numbers_v2_operations["ListItemAssignment"]["responses"]["200"]["content"]["application/json"]
     >(
       `https://numbers.twilio.com/v2/RegulatoryCompliance/Bundles/${this.sid}/ItemAssignments?PageSize=100`,
     );
-    const results: TwilioResource<unknown>[] = [];
     for (const item of response.results) {
       if (item.object_sid.startsWith("IT")) {
         results.push(new TwilioRegulatoryEndUser(item.object_sid));
@@ -26,6 +27,19 @@ export class TwilioRegulatoryBundle extends TwilioResource<
         results.push(new TwilioRegulatorySupportingDocument(item.object_sid));
       }
     }
+
+    for await (const response of twilioGetPaged<
+      twilio_numbers_v2_operations["ListEvaluation"]["responses"]["200"]["content"]["application/json"]
+    >(
+      `https://numbers.twilio.com/v2/RegulatoryCompliance/Bundles/${this.sid}/Evaluations`,
+    )) {
+      const evaluations = response.results.map(
+        (evaluation) =>
+          new TwilioRegulatoryBundleEvaluation(evaluation.sid, this.sid),
+      );
+      results.push(...evaluations);
+    }
+
     return results;
   };
   getApiUrl = () =>
@@ -70,4 +84,21 @@ export class TwilioRegulatorySupportingDocument extends TwilioResource<
       ];
     }
   };
+}
+
+export class TwilioRegulatoryBundleEvaluation extends TwilioResource<
+  twilio_numbers_v2_components["schemas"]["numbers.v2.regulatory_compliance.bundle.evaluation"]
+> {
+  bundleSid: string;
+  constructor(sid: string, bundleSid: string) {
+    super(sid);
+    this.bundleSid = bundleSid;
+  }
+  getName = () => `Regulatory bundle evaluation: ${this.sid}`;
+  getRelatedResources = async () => {
+    const object = await this.getObject();
+    return [new TwilioRegulatoryBundle(object.bundle_sid)];
+  };
+  getApiUrl = () =>
+    `https://numbers.twilio.com/v2/RegulatoryCompliance/Bundles/${this.bundleSid}/Evaluations/${this.sid}`;
 }
