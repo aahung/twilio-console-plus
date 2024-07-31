@@ -29,9 +29,10 @@ const ClickToCopySpan: React.FC<ClickToCopySpanProperties> = ({
 
 const AccountInfoBannerDiv = styled.div`
   position: fixed;
-  top: 0.2rem;
+  top: 0;
   left: 0;
   right: 0;
+  z-index: 41; // twilio console new nav bar is 40
   padding: 0.1rem;
   margin: auto;
   background-color: black;
